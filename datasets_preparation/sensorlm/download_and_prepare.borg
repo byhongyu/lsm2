@@ -1,0 +1,45 @@
+import '//medical/waveforms/datasets/mimic/tfds_borg/download_and_prepare_tmpl.borg' as prod
+import '//production/borg/templates/mpmng.borg' as mpm
+
+vars = @prod.vars {
+  datasets = 'sensorlm'
+  cns = '/namespace/fitbit-medical-sandboxes/jg/partner/encrypted/chr-ards-fitbit-prod-research/deid/exp/dmcduff/ttl=52w/sensorlm/pretrain'
+  // cns = '/namespace/fitbit-medical-sandboxes/jg/partner/encrypted/chr-ards-fitbit-prod-research/deid/exp/dmcduff/ttl=52w/sensorlm/valid'
+  sub_cns_dir = 'testing'
+  file_format = 'tfrecord'
+  module_import = 'google3.medical.waveforms.modelling.lsm.datasets.sensorlm'
+
+  job_name_suffix = '_sensorlm_' + real_username()
+  send_completion_email = true
+
+  user = 'chr-ards-fitbit-prod-research-deid-exp-jobs'
+  charged_user = 'consumer-health-research-ards-borg-quota'
+  cns_charged_user = 'chr-ards-fitbit-prod-research-deid-exp-jobs'
+  flume_tmp_dir_group = 'chr-ards-fitbit-prod-research-deid-exp-jobs'
+  gfs_user = 'chr-ards-fitbit-prod-research-deid-exp-jobs'
+
+  // daybreak2-id is in yq
+  cell = 'oregon'
+  flume_borg_cells = 'oregon'
+  flume_tmp_file_cells = 'jn-d:jf-d:jg-d:ji-d:jj-d:jk-d:jl-d'
+  flume_exec_mode = 'BORG'
+  flume_auto_retry = false
+  flume_worker_priority = 119
+  flume_batch_scheduler_strategy = 'RUN_SOON'
+  flume_dax_num_threads_per_worker = 4
+  flume_dax_max_total_parallelism = 1000
+  priority = 119
+  autopilot = true
+  // Error Tolerance
+  flume_dax_skip_unprocessable_records = true
+  flume_dax_colocate_manager = false
+  // MPM must match build flags in commands.sh
+  pkg_version = 'dev-' + real_username()
+  download_and_prepare_pkg_name =
+      'medical/waveforms/modelling/lsm/datasets/sensorlm/download_and_prepare'
+  binary_path =
+      'medical/wwaveforms/modelling/lsm/datasets/sensorlm/download_and_prepare'
+  minimum_mpm_durability = mpm.DURABILITY_EPHEMERAL
+}
+
+service datasets = @prod.datasets_tmpl {}
