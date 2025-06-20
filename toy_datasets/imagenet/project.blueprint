@@ -1,0 +1,30 @@
+include "devtools/blueprint/ncl/blueprint_file.ncl";
+
+// See http://go/blueprint/howto-write for details.
+
+blueprint_file = ::blueprint::BlueprintFile(
+  project_name = "experimental_largesensormodels_toy_datasets_imagenet",
+  teams_product_id = 00000,  // TODO see http://go/teams_product_id
+  tech_lead = ["xliucs"],  // TODO update this
+  dev_mailing_list = "example-dev@google.com",  // TODO update this
+  mdb_groups = ["example"],  // TODO update this
+  buganizer_component_ids = [00000],  // TODO update this
+  owned_code_depotpaths = [
+    "//depot/google3/experimental/largesensormodels/toy_datasets/imagenet/...",
+  ],
+
+  buildable_units = [
+    ::blueprint::BuildableUnit(
+      name = "experimental_largesensormodels_toy_datasets_imagenet",
+      enable_continuous_build = true,
+      enable_release = false,  // test-only project
+      enable_coverage = true,
+      build_patterns = ["//experimental/largesensormodels/toy_datasets/imagenet/..."],
+      build_flags = [
+        "--compilation_mode=opt",
+        "--config=cuda",
+      ],
+      test_patterns = ["//experimental/largesensormodels/toy_datasets/imagenet/..."],
+    ),
+  ],
+);
